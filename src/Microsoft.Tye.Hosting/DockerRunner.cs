@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Tye.Hosting.Dashboard;
 using Microsoft.Tye.Hosting.Model;
 
 namespace Microsoft.Tye.Hosting
@@ -147,11 +148,32 @@ namespace Microsoft.Tye.Hosting
             var tasks = new Task[containers.Count];
             var index = 0;
 
+            Dictionary<string, Service> dummyServices = new Dictionary<string, Service>();
+
             foreach (var s in containers)
             {
                 var docker = (DockerRunInfo)s.Description.RunInfo!;
 
                 tasks[index++] = StartContainerAsync(application, s, docker, dockerNetwork);
+
+                foreach(var sa in application.Services)
+                {
+                    if(s.Description.Name == sa.Key + "-proxy")
+                    {
+                        _logger.LogInformation($"{s.Description.Name} {s.Replicas.Count}");
+                        foreach(var r in s.Replicas)
+                        {
+                            dummyServices.Add(s.Description.Name, r.Value.Service);
+                        }
+                        _logger.LogInformation($"{sa.Key} {sa.Value.Replicas.Count}");
+                    }
+                }
+
+            }
+
+            foreach(var ds in dummyServices)
+            {
+                application.Services.Add(ds.Key, ds.Value);
             }
 
             await Task.WhenAll(tasks);

@@ -22,6 +22,7 @@ namespace Microsoft.Tye.ConfigModel
         public string Name { get; set; } = default!;
         public bool External { get; set; }
         public string? Image { get; set; }
+        public string? ImageEntrypoint { get; set; }
         public string? DockerFile { get; set; }
         public string? DockerFileContext { get; set; }
         public string? Project { get; set; }

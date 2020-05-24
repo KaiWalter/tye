@@ -45,6 +45,9 @@ namespace Tye.Serialization
                     case "image":
                         service.Image = YamlParser.GetScalarValue(key, child.Value);
                         break;
+                    case "imageEntrypoint":
+                        service.ImageEntrypoint = YamlParser.GetScalarValue(key, child.Value);
+                        break;
                     case "dockerFile":
                         service.DockerFile = YamlParser.GetScalarValue(key, child.Value);
                         break;

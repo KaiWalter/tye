@@ -116,6 +116,10 @@ namespace Microsoft.Tye
                             Args = configService.Args,
                             Replicas = configService.Replicas ?? 1
                         };
+                        if(configService.ImageEntrypoint != null)
+                        {
+                            container.Args = (container.Args ?? "") + configService.ImageEntrypoint;
+                        }
                         service = container;
 
                         container.Liveness = configService.Liveness != null ? GetProbeBuilder(configService.Liveness) : null;
